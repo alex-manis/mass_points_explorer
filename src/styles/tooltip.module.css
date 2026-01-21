@@ -1,0 +1,30 @@
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  z-index: 1000;
+  transform: translate(10px, 10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  min-width: 150px;
+}
+
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 2px 0;
+}
+
+.tooltip-label {
+  font-weight: bold;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+.tooltip-value {
+  text-align: right;
+}

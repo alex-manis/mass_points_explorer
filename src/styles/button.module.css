@@ -1,0 +1,42 @@
+.button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.15s, opacity 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button--small {
+  padding: 2px 8px;
+}
+
+.button--medium {
+  padding: 6px 12px;
+}
+
+.button--large {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.button--primary {
+  background: #4a9eff;
+  border-color: #4a9eff;
+}
+
+.button--primary:hover:not(:disabled) {
+  background: #6bb1ff;
+  border-color: #6bb1ff;
+}

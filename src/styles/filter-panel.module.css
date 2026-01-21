@@ -1,0 +1,61 @@
+.filter-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  min-width: 280px;
+  z-index: 1000;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+}
+
+.filter-panel__header {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-panel__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.filter-panel__section {
+  margin-bottom: 16px;
+}
+
+.filter-panel__section:last-child {
+  margin-bottom: 0;
+}
+
+.filter-panel__section-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  opacity: 0.9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-panel__range-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-panel__categories {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-panel__category-actions {
+  display: flex;
+  gap: 4px;
+}

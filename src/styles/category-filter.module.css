@@ -1,0 +1,11 @@
+.category-filter__header {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.category-filter__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
