@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { loadBasePoints, expandPoints } from '../lib/points.js'
+import { loadBasePoints, expandPoints } from '../services/points.js'
 import { computePointsMetadata, createDefaultFilters } from '../state/filters.js'
 import { POINT_CONFIG } from '../utils/constants.js'
 

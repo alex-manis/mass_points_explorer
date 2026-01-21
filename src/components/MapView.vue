@@ -6,7 +6,8 @@ import { useTooltip } from '../composables/useTooltip.js'
 import { useErrorHandler } from '../composables/useErrorHandler.js'
 import { useDataLoader } from '../composables/useDataLoader.js'
 import { useLayerManager } from '../composables/useLayerManager.js'
-import FilterPanel from './FilterPanel.vue'
+import { ERROR_CODES, getErrorConfig } from '../utils/errors.js'
+import FilterPanel from './filters/FilterPanel.vue'
 import MapTooltip from './map/MapTooltip.vue'
 import ErrorNotification from './ui/ErrorNotification.vue'
 import LoadingSpinner from './ui/LoadingSpinner.vue'
@@ -33,10 +34,7 @@ const initialize = async () => {
       }
     }
   } catch (err) {
-    handleError(err, {
-      userMessage: 'Failed to initialize application. Please try again.',
-      details: err
-    })
+    handleError(err, getErrorConfig(ERROR_CODES.APP_INIT_FAILED, { originalError: err }))
     if (import.meta.env.DEV) {
       console.error('[MapView] Initialization failed:', err)
     }

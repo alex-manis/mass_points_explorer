@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { createCategoryLayers, updateLayerFilters } from '../lib/mapLayers.js'
+import { createCategoryLayers, updateLayerFilters } from '../services/mapLayers.js'
 
 export function useLayerManager() {
   // Stable reference - layers never recreated, only cloned for updates

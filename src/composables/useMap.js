@@ -3,7 +3,8 @@ import { ref, onUnmounted } from 'vue'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { MapboxOverlay } from '@deck.gl/mapbox'
-import { DEFAULT_MAP_CONFIG } from '../utils/constants.js'
+import { DEFAULT_MAP_CONFIG, MAP_TIMEOUTS } from '../utils/constants.js'
+import { ERROR_CODES, createError, getErrorConfig } from '../utils/errors.js'
 import { useErrorHandler } from './useErrorHandler.js'
 
 export function useMap() {
@@ -17,19 +18,14 @@ export function useMap() {
   const { handleError } = useErrorHandler()
      const initMap = async (config = {}) => {
     if (!import.meta.env.VITE_MAPBOX_TOKEN) {
-      const error = new Error('Missing VITE_MAPBOX_TOKEN in environment variables')
-      handleError(error, {
-        userMessage: 'Map cannot be loaded: Missing API token. Please check your configuration.',
-        details: { requiresToken: true }
-      })
+      const error = createError(ERROR_CODES.MAP_MISSING_TOKEN)
+      handleError(error, getErrorConfig(ERROR_CODES.MAP_MISSING_TOKEN))
       throw error
     }
 
     if (!mapContainer.value) {
-      const error = new Error('Map container element not found')
-      handleError(error, {
-        userMessage: 'Map container is not ready. Please try again.'
-      })
+      const error = createError(ERROR_CODES.MAP_CONTAINER_NOT_FOUND)
+      handleError(error, getErrorConfig(ERROR_CODES.MAP_CONTAINER_NOT_FOUND))
       throw error
     }
 
@@ -51,10 +47,7 @@ export function useMap() {
 
       // Add error handlers
       map.on('error', (e) => {
-        handleError(e.error, {
-          userMessage: 'Map error occurred',
-          details: { event: e }
-        })
+        handleError(e.error, getErrorConfig(ERROR_CODES.MAP_RUNTIME_ERROR, { event: e }))
       })
 
       map.on('styleimagemissing', (e) => {
@@ -66,8 +59,8 @@ export function useMap() {
       // Wait for map to load
       await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
-          reject(new Error('Map load timeout'))
-        }, 30000) // 30 second timeout
+          reject(createError(ERROR_CODES.MAP_LOAD_TIMEOUT))
+        }, MAP_TIMEOUTS.loadTimeout)
 
         map.once('style.load', () => {
           clearTimeout(timeout)
@@ -86,16 +79,14 @@ export function useMap() {
       return map
     } catch (error) {
       isMapLoading.value = false
-      handleError(error, {
-        userMessage: 'Failed to initialize map. Please refresh the page.'
-      })
+      handleError(error, getErrorConfig(ERROR_CODES.MAP_INIT_FAILED))
       throw error
     }
   }
 
    const createOverlay = (layers = []) => {
     if (!map) {
-      throw new Error('Map must be initialized before creating overlay')
+      throw createError(ERROR_CODES.MAP_OVERLAY_NOT_INITIALIZED)
     }
 
     try {
@@ -103,9 +94,7 @@ export function useMap() {
       map.addControl(overlay)
       return overlay
     } catch (error) {
-      handleError(error, {
-        userMessage: 'Failed to create map overlay'
-      })
+      handleError(error, getErrorConfig(ERROR_CODES.MAP_OVERLAY_CREATION_FAILED))
       throw error
     }
   }

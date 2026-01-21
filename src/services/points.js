@@ -1,4 +1,5 @@
-import { CATEGORIES, DEFAULT_CATEGORY, POINT_CONFIG } from '../utils/constants.js'
+import { CATEGORIES, DEFAULT_CATEGORY, POINT_CONFIG, DATA_CONFIG } from '../utils/constants.js'
+import { ERROR_CODES, createError } from '../utils/errors.js'
 
 function deterministicHash(seed) {
   let hash = 0
@@ -8,7 +9,7 @@ function deterministicHash(seed) {
     hash = hash & hash // Convert to 32bit integer
   }
   // Normalize to 0-1 range
-  return Math.abs(hash % 10000) / 10000
+  return Math.abs(hash % POINT_CONFIG.hashNormalizer) / POINT_CONFIG.hashNormalizer
 }
 
 function deterministicValue(seed, min, max) {
@@ -18,7 +19,7 @@ function deterministicValue(seed, min, max) {
 
 export function normalizePoint(raw, index) {
   return {
-    id: raw.id || `pt-${String(index).padStart(6, '0')}`,
+    id: raw.id || `${POINT_CONFIG.idPrefix}${String(index).padStart(POINT_CONFIG.idPadding, '0')}`,
     position: [raw.lng || raw.longitude || 0, raw.lat || raw.latitude || 0],
     value: raw.value !== undefined ? Number(raw.value) : 0,
     category: raw.category || DEFAULT_CATEGORY
@@ -29,8 +30,8 @@ function swarmOffset(pointIndex, swarmId, baseRadius) {
   // Swarm-wide parameters (same for all points in this swarm)
   const swarmSeed = swarmId
   const theta = deterministicHash(`${swarmSeed}-rot`) * Math.PI * 2  // Rotation angle
-  const a = baseRadius * (0.6 + deterministicHash(`${swarmSeed}-a`) * 1.2)  // Major axis
-  const b = baseRadius * (0.3 + deterministicHash(`${swarmSeed}-b`) * 0.8)  // Minor axis
+  const a = baseRadius * (POINT_CONFIG.swarm.majorAxisMin + deterministicHash(`${swarmSeed}-a`) * POINT_CONFIG.swarm.majorAxisRange)  // Major axis
+  const b = baseRadius * (POINT_CONFIG.swarm.minorAxisMin + deterministicHash(`${swarmSeed}-b`) * POINT_CONFIG.swarm.minorAxisRange)  // Minor axis
   
   // Point-specific parameters
   const pointSeed = `${swarmSeed}-pt${pointIndex}`
@@ -39,8 +40,8 @@ function swarmOffset(pointIndex, swarmId, baseRadius) {
   const r = Math.sqrt(u)  // Denser towards center
   
   // Organic boundary irregularity (amoeba effect)
-  const k = 0.35  // Irregularity strength
-  const m = 3 + Math.floor(deterministicHash(`${swarmSeed}-waves`) * 5)  // 3-7 waves
+  const k = POINT_CONFIG.swarm.irregularityStrength
+  const m = POINT_CONFIG.swarm.wavesMin + Math.floor(deterministicHash(`${swarmSeed}-waves`) * POINT_CONFIG.swarm.wavesRange)
   const phase = deterministicHash(`${swarmSeed}-phase`) * Math.PI * 2
   const wobble = 1 + k * Math.sin(m * ang + phase)
   
@@ -102,7 +103,7 @@ export function expandPoints(basePoints, targetCount) {
     const baseValue = deterministicValue(`${seed}-val`, POINT_CONFIG.valueRange.min, POINT_CONFIG.valueRange.max)
     // Add slight variation based on position in swarm (closer to center = larger schools)
     const radialFactor = Math.sqrt(deterministicHash(`${seed}-rad`))
-    const newValue = baseValue * (0.7 + radialFactor * 0.6)
+    const newValue = baseValue * (POINT_CONFIG.radialValueMin + radialFactor * POINT_CONFIG.radialValueRange)
     
     // Deterministic category selection
     const categoryIndex = Math.floor(deterministicValue(`${seed}-cat`, 0, CATEGORIES.length))
@@ -121,10 +122,14 @@ export function expandPoints(basePoints, targetCount) {
 
 export async function loadBasePoints() {
   try {
-    const response = await fetch('/points.base.json')
+    const response = await fetch(DATA_CONFIG.basePointsPath)
     
     if (!response.ok) {
-      throw new Error(`Failed to load points: ${response.statusText}`)
+      throw createError(
+        ERROR_CODES.DATA_FETCH_ERROR,
+        `HTTP ${response.status}: ${response.statusText}`,
+        { status: response.status, statusText: response.statusText }
+      )
     }
     
     const rawPoints = await response.json()
@@ -133,6 +138,9 @@ export async function loadBasePoints() {
     return rawPoints.map((raw, index) => normalizePoint(raw, index))
   } catch (error) {
     console.error('Error loading base points:', error)
-    throw error
+    // If it's already a structured error, rethrow
+    if (error.code) throw error
+    // Otherwise wrap it
+    throw createError(ERROR_CODES.DATA_LOAD_FAILED, error)
   }
 }

@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { normalizePoint, expandPoints } from '../src/lib/points.js'
+import { normalizePoint, expandPoints } from '../src/services/points.js'
 
 describe('normalizePoint', () => {
   it('should normalize raw point with all fields', () => {

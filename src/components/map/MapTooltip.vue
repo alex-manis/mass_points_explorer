@@ -1,7 +1,7 @@
 <script setup>
 
 import Tooltip from '../ui/Tooltip.vue'
-import { FISH_NAMES } from '../../utils/constants.js'
+import { FISH_NAMES, UI_LABELS, FORMAT_PRECISION } from '../../utils/constants.js'
 
 const props = defineProps({
  
@@ -17,27 +17,27 @@ const props = defineProps({
 })
 
 const formatIdWithPosition = (data) => {
-  if (!data || !data.id) return 'N/A'
+  if (!data || !data.id) return UI_LABELS.tooltip.notAvailable
   const position = data.position || [0, 0]
   const [lng, lat] = position
-  return `${data.id} - position: [${lng.toFixed(4)}, ${lat.toFixed(4)}]`
+  return `${data.id} - position: [${lng.toFixed(FORMAT_PRECISION.coordinates)}, ${lat.toFixed(FORMAT_PRECISION.coordinates)}]`
 }
 
 const tooltipFields = [
   { 
-    label: 'ID', 
+    label: UI_LABELS.tooltip.id, 
     key: null,
     formatter: () => formatIdWithPosition(props.data)
   },
   { 
-    label: 'Species', 
+    label: UI_LABELS.tooltip.species, 
     key: 'category',
     formatter: (category) => FISH_NAMES[category] || category
   },
   { 
-    label: 'School Size', 
+    label: UI_LABELS.tooltip.schoolSize, 
     key: 'value', 
-    formatter: (v) => v ? `${v.toFixed(0)} fish` : 'N/A' 
+    formatter: (v) => v ? `${v.toFixed(FORMAT_PRECISION.schoolSize)} ${UI_LABELS.tooltip.unit}` : UI_LABELS.tooltip.notAvailable 
   }
 ]
 </script>
