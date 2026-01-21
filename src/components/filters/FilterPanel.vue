@@ -1,7 +1,8 @@
 <script setup>
 
-import ValueRangeFilter from './filters/ValueRangeFilter.vue'
-import CategoryFilter from './filters/CategoryFilter.vue'
+import ValueRangeFilter from './ValueRangeFilter.vue'
+import CategoryFilter from './CategoryFilter.vue'
+import { UI_LABELS } from '../../utils/constants.js'
 
 defineProps({
  
@@ -22,12 +23,12 @@ defineEmits(['update:percentage', 'update:categories'])
 <template>
   <div :class="$style['filter-panel']">
     <div :class="$style['filter-panel__header']">
-      <h3 :class="$style['filter-panel__title']">🐟 Fish Schools</h3>
+      <h3 :class="$style['filter-panel__title']">{{ UI_LABELS.filterPanel.title }}</h3>
     </div>
     
     <div :class="$style['filter-panel__section']">
       <div :class="$style['filter-panel__section-title']">
-        School Size Range
+        {{ UI_LABELS.filterPanel.schoolSizeRange }}
       </div>
       
       <div :class="$style['filter-panel__range-group']">
@@ -40,7 +41,7 @@ defineEmits(['update:percentage', 'update:categories'])
     
     <div :class="$style['filter-panel__section']">
       <div :class="$style['filter-panel__section-title']">
-        Fish Species
+        {{ UI_LABELS.filterPanel.fishSpecies }}
       </div>
       
       <div :class="$style['filter-panel__categories']">
@@ -54,4 +55,4 @@ defineEmits(['update:percentage', 'update:categories'])
   </div>
 </template>
 
-<style module src="../styles/filter-panel.module.css"></style>
+<style module src="../../styles/filter-panel.module.css"></style>

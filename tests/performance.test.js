@@ -1,8 +1,8 @@
     
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { expandPoints, normalizePoint } from '../src/lib/points.js'
+import { expandPoints, normalizePoint } from '../src/services/points.js'
 import { createDefaultFilters, computePointsMetadata } from '../src/state/filters.js'
-import { createCategoryLayers, updateLayerFilters } from '../src/lib/mapLayers.js'
+import { createCategoryLayers, updateLayerFilters } from '../src/services/mapLayers.js'
 
 const toggleCategory = (filters, category) => {
   filters.selectedCategories.has(category)

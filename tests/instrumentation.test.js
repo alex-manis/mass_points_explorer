@@ -1,6 +1,6 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { expandPoints } from '../src/lib/points.js'
+import { expandPoints } from '../src/services/points.js'
 import {
   createDefaultFilters,
   computePointsMetadata

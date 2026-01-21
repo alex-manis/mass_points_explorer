@@ -1,6 +1,6 @@
 
 import { describe, it, expect } from 'vitest'
-import { createCategoryLayers, updateLayerFilters } from '../src/lib/mapLayers.js'
+import { createCategoryLayers, updateLayerFilters } from '../src/services/mapLayers.js'
 import { computePointsMetadata } from '../src/state/filters.js'
 
 describe('mapLayers - createCategoryLayers', () => {
