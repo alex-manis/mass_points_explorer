@@ -146,8 +146,6 @@ The current approach works well for hundreds of thousands of points. For signifi
 
 ## E. Use of AI Tools
 
-## E. Use of AI Tools
-
 AI tools were used extensively and intentionally throughout this task as part of the normal working process.
 
 They were involved at multiple stages of the assignment, including:
